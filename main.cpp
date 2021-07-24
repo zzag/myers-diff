@@ -18,12 +18,14 @@ int main(int argc, char *argv[])
     const QString src = argv[1];
     const QString dst = argv[2];
 
-    const auto operations = diff(src, dst);
+    const auto operations = diff(src, dst, DiffOption::DetectMoves);
     for (const auto &operation : operations) {
         if (auto insertOperation = std::get_if<InsertOperation>(&operation)) {
             qDebug() << "insert" << dst[insertOperation->offset] << "at" << insertOperation->index;
         } else if (auto removeOperation = std::get_if<RemoveOperation>(&operation)) {
             qDebug() << "remove" << removeOperation->count << "items at" << removeOperation->offset;
+        } else if (auto moveOperation = std::get_if<MoveOperation>(&operation)) {
+            qDebug() << "move from" << moveOperation->from << "to" << moveOperation->to;
         }
     }
 
